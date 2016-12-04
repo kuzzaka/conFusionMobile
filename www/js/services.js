@@ -13,15 +13,11 @@ angular.module('conFusion.services', ['ngResource'])
       }
     }])
 
-    .factory('corporateFactory', ['$resource', 'baseUrl', function($resource, baseUrl) {
+    .service('corporateFactory', ['$resource', 'baseUrl', function($resource, baseUrl) {
 
-      var corpfac = {};
-
-      corpfac.getLeaders = function() {
+      this.getLeaders = function() {
         return $resource(baseUrl + 'leadership/:id');
       };
-
-      return corpfac;
     }])
 
     .service('feedbackFactory', ['$resource', 'baseUrl', function($resource, baseUrl) {
