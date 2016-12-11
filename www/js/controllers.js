@@ -59,7 +59,7 @@ angular.module('conFusion.controllers', [])
       }
     })
 
-    .controller('MenuController', function($scope, menuFactory, baseUrl) {
+    .controller('MenuController', function($scope, menuFactory, baseUrl, favoriteFactory, $ionicListDelegate) {
       $scope.baseURL = baseUrl;
       $scope.tab = 1;
       $scope.filtText = '';
@@ -99,9 +99,15 @@ angular.module('conFusion.controllers', [])
       $scope.toggleDetails = function() {
         $scope.showDetails = !$scope.showDetails;
       };
+      $scope.addFavorite = function(index) {
+        console.log(favoriteFactory)
+        favoriteFactory.addToFavorites(index);
+        console.log(index, favoriteFactory.getFavorites());
+        $ionicListDelegate.closeOptionButtons();
+      }
     })
 
-    .controller('ContactController', ['$scope', function($scope) {
+    .controller('ContactController', function($scope) {
 
       $scope.feedback = {
         mychannel: "",
@@ -117,7 +123,7 @@ angular.module('conFusion.controllers', [])
       }];
       $scope.invalidChannelSelection = false;
 
-    }])
+    })
 
     .controller('FeedbackController', function($scope, feedbackFactory) {
 
@@ -222,5 +228,40 @@ angular.module('conFusion.controllers', [])
           function(response) {
             $scope.message = 'Error: ' + response.status + ' ' + response.statusText;
           });
+    })
+    .controller('FavoritesController', function($scope, menuFactory, favoriteFactory, baseUrl, $ionicListDelegate) {
+      $scope.baseURL = baseUrl;
+      $scope.shouldShowDelete = false;
+      $scope.favorites = favoriteFactory.getFavorites();
+      $scope.dishes = menuFactory.getDishes().query(function(response) {
+            $scope.dishes = response;
+            $scope.showMenu = true;
+          },
+          function(response) {
+            $scope.message = 'Error: ' + response.status + ' ' + response.statusText;
+          });
+      $scope.toggleDelete = function() {
+        $scope.shouldShowDelete = !$scope.shouldShowDelete;
+      };
+      $scope.deleteFavorite = function(index) {
+        favoriteFactory.deleteFromFavorites(index);
+        $scope.shouldShowDelete = false;
+      };
+    })
+    .filter('favoriteFilter', function() {
+      return function(dishes, favorites) {
+        return dishes.filter(function(dish) {
+          return favorites.indexOf(dish.id) !== -1;
+        });
+       /* var out = [];
+        for (var i = 0; i < favorites.length; i++) {
+          for (var j = 0;j < dishes.length; j++) {
+            if (dishes[j].id === favorites[i].id) {
+              out.push(dishes[j]);
+            }
+          }
+        }
+        return out;*/
+      }
     })
 ;
