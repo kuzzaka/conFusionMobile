@@ -11,6 +11,7 @@ angular.module('conFusion.controllers', [])
 
       // Form data for the login modal
       $scope.loginData = {};
+      $scope.reservation = {};
 
       // Create the login modal that we will use later
       $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -39,9 +40,26 @@ angular.module('conFusion.controllers', [])
           $scope.closeLogin();
         }, 1000);
       };
+      $ionicModal.fromTemplateUrl('templates/reserve.html', {
+        scope: $scope
+      }).then(function(modal) {
+        $scope.reserveform = modal;
+      });
+      $scope.closeReserve = function() {
+        $scope.reserveform.hide();
+      };
+      $scope.reserve = function() {
+        $scope.reserveform.show();
+      };
+      $scope.doReserve = function() {
+        console.log('Doing reservation', $scope.reservation);
+        $timeout(function() {
+          $scope.closeReserve();
+        }, 1000);
+      }
     })
 
-    .controller('MenuController', ['$scope', 'menuFactory', 'baseUrl', function($scope, menuFactory, baseUrl) {
+    .controller('MenuController', function($scope, menuFactory, baseUrl) {
       $scope.baseURL = baseUrl;
       $scope.tab = 1;
       $scope.filtText = '';
@@ -81,7 +99,7 @@ angular.module('conFusion.controllers', [])
       $scope.toggleDetails = function() {
         $scope.showDetails = !$scope.showDetails;
       };
-    }])
+    })
 
     .controller('ContactController', ['$scope', function($scope) {
 
@@ -101,7 +119,7 @@ angular.module('conFusion.controllers', [])
 
     }])
 
-    .controller('FeedbackController', ['$scope', 'feedbackFactory', function($scope, feedbackFactory) {
+    .controller('FeedbackController', function($scope, feedbackFactory) {
 
       $scope.sendFeedback = function() {
 
@@ -123,9 +141,9 @@ angular.module('conFusion.controllers', [])
           $scope.feedbackForm.$setPristine();
         }
       };
-    }])
+    })
 
-    .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', 'baseUrl', function($scope, $stateParams, menuFactory, baseUrl) {
+    .controller('DishDetailController', function($scope, $stateParams, menuFactory, baseUrl) {
       $scope.baseURL = baseUrl;
       $scope.showDish = false;
       $scope.message = 'Loading ...';
@@ -140,9 +158,9 @@ angular.module('conFusion.controllers', [])
               }
           );
 
-    }])
+    })
 
-    .controller('DishCommentController', ['$scope', 'menuFactory', function($scope, menuFactory) {
+    .controller('DishCommentController', function($scope, menuFactory) {
 
       $scope.comment = {rating: 5, comment: "", author: "", date: ""};
 
@@ -155,8 +173,8 @@ angular.module('conFusion.controllers', [])
 
         $scope.comment = {rating: 5, comment: "", author: "", date: ""};
       }
-    }])
-    .controller('IndexController', ['$scope', 'corporateFactory', 'menuFactory', 'baseUrl', function($scope, corporateFactory, menuFactory, baseUrl) {
+    })
+    .controller('IndexController', function($scope, corporateFactory, menuFactory, baseUrl) {
       $scope.baseURL = baseUrl;
       $scope.dishMessage = $scope.leaderMessage = $scope.promoMessage = 'Loading ...';
       $scope.showDish = false;
@@ -192,8 +210,8 @@ angular.module('conFusion.controllers', [])
                 $scope.leaderMessage = 'Error: ' + response.status + ' ' + response.statusText;
               }
           );
-    }])
-    .controller('AboutController', ['$scope', 'corporateFactory', 'baseUrl', function($scope, corporateFactory, baseUrl) {
+    })
+    .controller('AboutController', function($scope, corporateFactory, baseUrl) {
       $scope.baseURL = baseUrl;
       $scope.showleaders = false;
       $scope.message = 'Loading ...';
@@ -204,5 +222,5 @@ angular.module('conFusion.controllers', [])
           function(response) {
             $scope.message = 'Error: ' + response.status + ' ' + response.statusText;
           });
-    }])
+    })
 ;
